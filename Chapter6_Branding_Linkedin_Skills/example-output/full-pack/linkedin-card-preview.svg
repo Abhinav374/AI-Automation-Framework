@@ -1,0 +1,31 @@
+<svg width="1200" height="1500" viewBox="0 0 1200 1500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cardBg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#081821"/>
+      <stop offset="100%" stop-color="#102b37"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" x2="1">
+      <stop offset="0%" stop-color="#4fd7ff"/>
+      <stop offset="100%" stop-color="#8af0c0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="1500" rx="48" fill="url(#cardBg)"/>
+  <rect x="70" y="70" width="1060" height="1360" rx="32" fill="#0d1d28" stroke="#3ad3ff" stroke-opacity="0.65"/>
+
+  <circle cx="160" cy="220" r="82" fill="url(#accent)" opacity="0.2"/>
+  <circle cx="980" cy="1230" r="120" fill="#8af0c0" opacity="0.12"/>
+
+  <text x="120" y="220" fill="#d9f6ff" font-size="26" font-family="Segoe UI, Arial, sans-serif" letter-spacing="3">QA TO AUTOMATION</text>
+  <text x="120" y="470" fill="#ffffff" font-size="88" font-family="Segoe UI, Arial, sans-serif" font-weight="700">The real</text>
+  <text x="120" y="580" fill="#ffffff" font-size="88" font-family="Segoe UI, Arial, sans-serif" font-weight="700">skill is</text>
+  <text x="120" y="690" fill="#5ee7d4" font-size="88" font-family="Segoe UI, Arial, sans-serif" font-weight="700">repetition</text>
+
+  <rect x="120" y="780" width="960" height="120" rx="20" fill="#122b35" stroke="#3ad3ff" stroke-opacity="0.4"/>
+  <text x="165" y="850" fill="#d9f6ff" font-size="42" font-family="Segoe UI, Arial, sans-serif">10 exercises a day • 1 hour daily • 5 projects</text>
+
+  <text x="120" y="1035" fill="#a9d4dd" font-size="32" font-family="Segoe UI, Arial, sans-serif">Start small. Stay daily. Build real flows.</text>
+  <text x="120" y="1095" fill="#a9d4dd" font-size="32" font-family="Segoe UI, Arial, sans-serif">Put your work where people can see it.</text>
+
+  <text x="120" y="1280" fill="#7ae2d9" font-size="28" font-family="Segoe UI, Arial, sans-serif" letter-spacing="2">#QA #SDET #TESTAUTOMATION</text>
+</svg>

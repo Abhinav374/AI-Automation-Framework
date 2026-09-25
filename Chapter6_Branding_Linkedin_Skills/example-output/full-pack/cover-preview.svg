@@ -1,0 +1,61 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#07151d"/>
+      <stop offset="50%" stop-color="#0d2330"/>
+      <stop offset="100%" stop-color="#122d3c"/>
+    </linearGradient>
+    <linearGradient id="glow1" x1="0" x2="1">
+      <stop offset="0%" stop-color="#39d0ff" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#67f1b4" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="glow2" x1="0" x2="1">
+      <stop offset="0%" stop-color="#31d0ff"/>
+      <stop offset="100%" stop-color="#8af0c0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <g opacity="0.18">
+    <path d="M0 200 L1600 200" stroke="#8ad8ff" stroke-width="1"/>
+    <path d="M0 500 L1600 500" stroke="#8ad8ff" stroke-width="1"/>
+    <path d="M0 700 L1600 700" stroke="#8ad8ff" stroke-width="1"/>
+    <path d="M350 0 L350 900" stroke="#8ad8ff" stroke-width="1"/>
+    <path d="M830 0 L830 900" stroke="#8ad8ff" stroke-width="1"/>
+    <path d="M1200 0 L1200 900" stroke="#8ad8ff" stroke-width="1"/>
+  </g>
+
+  <g opacity="0.22">
+    <circle cx="250" cy="150" r="160" fill="url(#glow1)"/>
+    <circle cx="1280" cy="730" r="220" fill="url(#glow2)"/>
+  </g>
+
+  <rect x="120" y="120" width="520" height="660" rx="24" fill="#0b1d28" stroke="#2fe0ff" stroke-opacity="0.8"/>
+  <text x="170" y="220" fill="#dffaff" font-size="30" font-family="Segoe UI, Arial, sans-serif" letter-spacing="4">7-STEP FORMULA</text>
+  <text x="170" y="360" fill="#ffffff" font-size="82" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Manual QA</text>
+  <text x="170" y="448" fill="#ffffff" font-size="82" font-family="Segoe UI, Arial, sans-serif" font-weight="700">to Automation</text>
+  <text x="170" y="560" fill="#a9d5df" font-size="28" font-family="Segoe UI, Arial, sans-serif">Build repetition, projects, and proof</text>
+
+  <g transform="translate(760 200)">
+    <circle cx="0" cy="0" r="48" fill="#0d2d39" stroke="#39d0ff" stroke-width="3"/>
+    <text x="0" y="12" fill="#dffaff" font-size="30" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif">1</text>
+
+    <circle cx="180" cy="0" r="48" fill="#0d2d39" stroke="#39d0ff" stroke-width="3"/>
+    <text x="180" y="12" fill="#dffaff" font-size="30" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif">2</text>
+
+    <circle cx="360" cy="0" r="48" fill="#0d2d39" stroke="#39d0ff" stroke-width="3"/>
+    <text x="360" y="12" fill="#dffaff" font-size="30" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif">3</text>
+
+    <circle cx="90" cy="170" r="48" fill="#0d2d39" stroke="#67f1b4" stroke-width="3"/>
+    <text x="90" y="182" fill="#dffaff" font-size="30" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif">4</text>
+
+    <circle cx="270" cy="170" r="48" fill="#0d2d39" stroke="#67f1b4" stroke-width="3"/>
+    <text x="270" y="182" fill="#dffaff" font-size="30" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif">5</text>
+
+    <circle cx="180" cy="340" r="48" fill="#0d2d39" stroke="#67f1b4" stroke-width="3"/>
+    <text x="180" y="352" fill="#dffaff" font-size="30" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif">6</text>
+
+    <circle cx="420" cy="340" r="48" fill="#0d2d39" stroke="#67f1b4" stroke-width="3"/>
+    <text x="420" y="352" fill="#dffaff" font-size="30" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif">7</text>
+  </g>
+</svg>

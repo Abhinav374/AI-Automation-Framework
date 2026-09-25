@@ -1,0 +1,6 @@
+fastapi==0.115.6
+groq==0.15.0
+pypdf==5.1.0
+python-dotenv==1.0.1
+scikit-learn==1.6.1
+uvicorn[standard]==0.34.0
