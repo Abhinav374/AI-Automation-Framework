@@ -1,0 +1,147 @@
+# TestCreator MCP (TC MCP) Plan
+
+## 1. Purpose
+
+Create a shareable, local MCP server that lets QA and development team members discover, prioritize, plan, review, and prepare test cases from the VWO test-case dataset. An MCP-capable AI client calls explicit tools rather than needing to load and interpret the entire CSV.
+
+The MCP server should provide deterministic data operations. The client/LLM can interpret a request and choose tools; the server should not make its own LLM or external-service calls.
+
+## 2. Dataset and source-of-truth rules
+
+The input dataset is `data/vwo_5000_test_cases.csv`. Its columns are:
+
+- `Issue Type`, `Issue Key`, `Summary`, `Description`
+- `Priority`, `Component` (the module), `Labels`, `Test Type`
+- `Preconditions`, `Steps`, `Expected Result`
+- `Browser`, `Device`, `Status`
+
+Treat this CSV as the canonical, read-only baseline. Keep its original rows unchanged. Validate the header and required fields at startup, report malformed input explicitly, and normalize values for searching without silently changing the source data.
+
+## 3. User goals
+
+Team members should be able to:
+
+- Find test cases by module, priority, test type, status, browser, device, and keywords.
+- Apply minimum/maximum priority bounds and result-count/pagination limits.
+- Retrieve a specific case by issue key.
+- Get a ranked set of high-value tests to run first for a selected module.
+- Build execution suites and understand coverage or effort.
+- Review test-case quality and identify possible duplicates or coverage gaps.
+- Draft, validate, and optionally save new test cases in the dataset's format.
+- Export selected test cases for team workflows and automation preparation.
+
+## 4. Proposed architecture
+
+1. **Data loading:** Read the configured CSV once when the server starts. Allow an explicit local path override for different installations.
+2. **Repository/query layer:** Centralize normalization, filtering, sorting, pagination, ranking, and serialization so all tools use the same rules.
+3. **FastMCP interface:** Expose small, focused tools with typed inputs and predictable structured outputs. Add MCP resources for stable reference data and prompts for common workflows where useful.
+4. **Safe persistence:** Keep the baseline read-only. If authoring is enabled, persist additions/overrides only in a separate, configurable overlay file.
+5. **Packaging and sharing:** Package the server with its dataset or document a controlled dataset path; provide reproducible installation, stdio client configuration, and an upgrade/data-refresh process.
+6. **Validation:** Test repository behavior, tool schemas and results, write gating, packaging, and a representative MCP-client launch.
+
+## 5. Tool catalog
+
+### Discovery and metadata
+
+1. **`list_modules`** — List available modules (`Component`) and case counts, optionally with priority/status breakdowns. Helps users discover valid module names.
+2. **`get_filter_options`** — Return distinct valid priorities, modules, test types, statuses, browsers, and devices, plus the documented priority order.
+3. **`get_test_stats`** — Summarize dataset size and distributions by module, priority, status, test type, browser, and device, with optional filters.
+
+### Search and retrieval
+
+4. **`get_test_case`** — Retrieve one or more complete test cases by `Issue Key`; report keys that were not found.
+5. **`search_test_cases`** — General structured search. Accept module, exact priority, inclusive `min_priority`/`max_priority`, status, test type, browser, device, label, and other supported fields; include `limit`, `offset`, sort, and compact/full output options.
+6. **`search_by_keyword`** — Search text fields such as summary, description, preconditions, steps, and expected result; allow module and priority filters to narrow results.
+7. **`get_top_tests_for_module`** — Return a bounded, ranked list for a module. Explain each score and prioritize execution value while avoiding excessive repetition of the same feature/scenario.
+8. **`get_similar_test_cases`** — Find likely related cases using normalized summary, feature, labels, and test type; return match reasons rather than claiming semantic certainty.
+
+### Execution planning
+
+9. **`build_test_suite`** — Assemble a smoke, sanity, or regression selection using module, priority bounds, statuses, and a requested minimum/maximum count; include selection rationale and coverage summary.
+10. **`get_browser_device_matrix`** — Report test counts across browser/device combinations for selected modules or filters and highlight combinations with little or no represented coverage.
+11. **`get_automation_candidates`** — Find cases that meet configurable readiness criteria for automation (for example status, structured steps, and expected result); show why each qualifies.
+12. **`estimate_execution_effort`** — Estimate aggregate effort for selected cases from an explicit configurable per-test or test-type duration assumption; label the result as an estimate, not observed runtime.
+
+### Quality and coverage
+
+13. **`find_duplicate_tests`** — Identify exact or likely duplicate cases within an optional scope; return groups, keys, and comparison signals for human review.
+14. **`find_coverage_gaps`** — Summarize missing representation against user-selected dimensions such as priority, test type, browser, device, or module. Do not imply that dataset absence proves a product risk.
+15. **`validate_test_case`** — Validate a draft against the dataset schema and basic completeness/consistency rules; return actionable field-level errors and warnings without saving it.
+
+### Authoring and export
+
+16. **`get_test_case_template`** — Return a blank VWO-shaped draft and a concise field guide, including the expected delimiter/format for steps.
+17. **`add_test_cases`** — Validate and preview new drafts, check duplicate keys/summaries, and optionally append accepted cases to the overlay. Require an explicit write opt-in and default to dry run.
+18. **`update_test_case`** — Propose or persist allowed field updates in the overlay without modifying the baseline; require an explicit write opt-in and show the before/after result.
+19. **`export_test_cases`** — Export selected cases to JSON or CSV (and, if requested, a Jira-compatible CSV) with stable field mapping and clear handling of large result sets.
+20. **`convert_to_gherkin`** — Convert selected cases into a Gherkin-style draft, preserving source keys and marking any inferred wording for review.
+21. **`generate_automation_stub`** — Generate a framework-specific starter outline from a case's steps and expected result; clearly indicate placeholders and avoid claiming generated code is production-ready.
+
+## 6. Shared tool behavior and output contracts
+
+- Use inclusive priority bounds. Document the priority order (`Low < Medium < High < Highest`) and reject invalid bound values with a clear error.
+- Enforce bounded pagination; return `total_matched`, `returned`, `offset`, `next_offset`, applied filters, and results for list/search responses.
+- Include stable identifiers (`Issue Key`) in every case representation. Offer compact results for discovery and complete rows when requested.
+- Keep sort/ranking deterministic and explain ranking signals. If source data does not support a requested metric, say so instead of inventing it.
+- Define consistent behavior for unknown modules/keys, empty matches, malformed rows, and invalid limits.
+- Keep outputs structured and concise enough for MCP clients while allowing callers to page for more data.
+
+## 7. Safety, sharing, and operations
+
+- Default to read-only operation. Register or enable write tools only through an explicit configuration setting.
+- Store authored changes in a separate overlay; never rewrite the source CSV.
+- Make file paths configurable and local. Do not expose arbitrary file access through tool arguments.
+- Ensure exports are written only to a configured export location, with safe filenames and clear overwrite behavior.
+- Document Python/runtime and FastMCP requirements, installation, startup, client configuration, environment variables, data refresh, and troubleshooting.
+- Provide a reproducible distribution method for internal teammates (source checkout or built package) and specify how the CSV is included or supplied.
+- Avoid credentials and external APIs; the default server should run locally over stdio.
+
+## 8. Delivery phases
+
+### Phase 1 — Confirm data contract and sharing model
+
+- Verify the CSV schema, valid values, row/key uniqueness expectations, and intended distribution/licensing of the dataset.
+- Decide whether the dataset ships in the package or is supplied as a local file by each teammate.
+- Agree on supported MCP clients and the team's Python/runtime baseline.
+
+### Phase 2 — Core read-only MCP
+
+- Implement startup validation, repository filtering, common result serialization, and the discovery/search/retrieval tools.
+- Deliver module/priority searching, inclusive minimum/maximum priority filters, bounded pagination, and top-tests ranking first.
+- Add resources for schema, module names, summary statistics, and individual cases where appropriate.
+
+### Phase 3 — Planning and quality
+
+- Add suite building, browser/device matrix, effort estimates, automation candidate selection, duplicate review, and coverage-gap summaries.
+- Validate deterministic results and document heuristic limitations.
+
+### Phase 4 — Drafting, optional writes, and export
+
+- Add templates and draft validation.
+- Add overlay-based authoring only behind an explicit opt-in, with dry-run previews and tests proving the baseline CSV remains unchanged.
+- Add exports and optional Gherkin/automation drafts.
+
+### Phase 5 — Team rollout
+
+- Package and install from a clean environment.
+- Provide client setup instructions and a quick-start workflow for QA/dev users.
+- Test a teammate-style install and launch, capture operational feedback, then version the release and document data updates.
+
+## 9. Acceptance criteria
+
+- A clean installation can launch the MCP server through stdio in a supported client.
+- Users can find cases by module and priority, use inclusive minimum/maximum priority bounds, and cap/page results.
+- Top-test selection for a module is repeatable, bounded, and accompanied by ranking explanations.
+- Search results and individual-case retrieval preserve source identifiers and expected fields.
+- Invalid inputs and missing data produce explicit, understandable errors.
+- The baseline CSV is never mutated; writes are unavailable by default and, when enabled, affect only the overlay.
+- Tests cover the data layer, tool inputs/outputs, ranking/filtering, write safeguards, and package/data availability.
+
+## 10. Decisions to settle with the team
+
+- Should the shared package bundle this exact 5,000-case CSV, or should each team member configure their own approved CSV?
+- Which clients and operating systems must the first release support?
+- Should the first release include write tools, or remain strictly read-only until the team approves an authoring workflow?
+- What ranking policy should define “top tests” (priority/status/type, risk, coverage diversity, or a team-approved blend)?
+- Are duration estimates useful, and if so, what evidence or assumptions should back them?
+- Which export formats are required for the team's existing test-management workflow?

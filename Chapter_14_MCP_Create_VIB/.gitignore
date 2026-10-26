@@ -1,0 +1,8 @@
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.venv/
+exports/
+data/tc_additions.csv
+data/tc_additions.csv.tmp
+
